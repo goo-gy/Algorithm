@@ -4,6 +4,8 @@
         "xiosbase": "cpp",
         "utility": "cpp",
         "cstdlib": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "queue": "cpp",
+        "xutility": "cpp"
     }
 }

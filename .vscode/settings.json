@@ -4,6 +4,23 @@
     "ostream": "cpp",
     "ios": "cpp",
     "utility": "cpp",
-    "tuple": "cpp"
+    "tuple": "cpp",
+    "initializer_list": "cpp",
+    "xutility": "cpp",
+    "xtree": "cpp",
+    "map": "cpp",
+    "deque": "cpp",
+    "xstring": "cpp",
+    "queue": "cpp",
+    "stack": "cpp",
+    "xlocinfo": "cpp",
+    "xlocale": "cpp",
+    "iostream": "cpp",
+    "istream": "cpp",
+    "memory": "cpp",
+    "type_traits": "cpp",
+    "xlocnum": "cpp",
+    "cstdlib": "cpp",
+    "cmath": "cpp"
   }
 }
