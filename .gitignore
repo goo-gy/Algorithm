@@ -1,4 +1,8 @@
 *.exe
+*.inp
 *.out
+*.png
 .vscode/
 samsung/
+kakao/
+baekjoon/.vscode/
