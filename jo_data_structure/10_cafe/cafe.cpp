@@ -12,16 +12,19 @@ int N, K;
 queue<int> q_inout;
 map<int, int> m_customer_in;
 list<int> li_seat;
+list<pair<int, int>> li_answer;
 
 void solution();
 void pre_setting();
 void input();
+void output();
 
 int main()
 {
     pre_setting();
     input();
     solution();
+    output();
     return 0;
 }
 
@@ -79,7 +82,7 @@ void solution()
             {
                 int seat_number = put_customer(customer);
                 m_customer_in[customer] = seat_number;
-                cout << customer << " " << seat_number + 1 << "\n";
+                li_answer.push_back(make_pair(customer, seat_number + 1));
             }
         }
         else
@@ -105,5 +108,13 @@ void input()
         int customer;
         cin >> customer;
         q_inout.push(customer);
+    }
+}
+
+void output()
+{
+    for(auto answer : li_answer)
+    {
+        cout << answer.first << " " << answer.second << "\n";
     }
 }
