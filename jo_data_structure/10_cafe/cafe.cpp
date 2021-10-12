@@ -4,14 +4,13 @@
 #include <list>
 
 #define M_I_I_ITER map<int, int>::iterator
-#define LI_I_ITER list<int>::iterator
 
 using namespace std;
 
 int N, K;
 queue<int> q_inout;
-map<int, int> m_customer_in;
-list<int> li_seat;
+map<int, int> m_cust_seat;
+map<int, int> m_seat_cust;
 list<pair<int, int>> li_answer;
 
 void solution();
@@ -30,43 +29,34 @@ int main()
 
 int put_customer(int customer)
 {
-    if (li_seat.size() == 0)
+    if (m_seat_cust.size() == 0)
     {
-        li_seat.push_back(0);
+        m_seat_cust[0] = customer;
         return 0;
     }
-    LI_I_ITER iter_insert;
-    LI_I_ITER iter = li_seat.begin();
-    int max_gap = 0;
-    int prev = *iter;
-    for (iter++; iter != li_seat.end(); iter++)
+    M_I_I_ITER iter = m_seat_cust.begin();
+    int prev = iter->first;
+    int gap, seat, max_seat, max_gap = 0;
+    for (iter++; iter != m_seat_cust.end(); iter++)
     {
-        if (*iter - prev > max_gap)
+        gap = iter->first - prev;
+        seat = (iter->first + prev) / 2;
+        if (gap > max_gap)
         {
-            max_gap = *iter - prev;
-            iter_insert = iter;
+            max_gap = gap;
+            max_seat = seat;
         }
-        prev = *iter;
+        prev = iter->first;
     }
-    int seat_mid;
-    if (*li_seat.begin() + N - prev > max_gap)
+    gap = m_seat_cust.begin()->first + N - prev;
+    seat = ((m_seat_cust.begin()->first + N + prev) / 2) % N;
+    if (gap > max_gap)
     {
-        int next = *li_seat.begin() + N; 
-        max_gap = next - prev;
-        seat_mid = ((next + prev) / 2) % N;
-        if(seat_mid < prev)
-            iter_insert = li_seat.begin();
-        else 
-            iter_insert = li_seat.end();
-    }
-    else
-    {
-        LI_I_ITER iter_insert_front = iter_insert;
-        iter_insert_front--;
-        seat_mid = (*iter_insert_front + *iter_insert) / 2;
-    }
-    li_seat.insert(iter_insert, seat_mid);
-    return seat_mid;
+        max_gap = gap;
+        max_seat = seat;
+    };
+    m_seat_cust[max_seat] = customer;
+    return max_seat;
 }
 
 void solution()
@@ -75,21 +65,21 @@ void solution()
     {
         int customer = q_inout.front();
         q_inout.pop();
-        M_I_I_ITER iter_customer = m_customer_in.find(customer);
-        if (iter_customer == m_customer_in.end())
+        M_I_I_ITER iter_customer = m_cust_seat.find(customer);
+        if (iter_customer == m_cust_seat.end())
         {
-            if (li_seat.size() < N)
+            if (m_seat_cust.size() < N)
             {
-                int seat_number = put_customer(customer);
-                m_customer_in[customer] = seat_number;
-                li_answer.push_back(make_pair(customer, seat_number + 1));
+                int seat = put_customer(customer);
+                m_cust_seat[customer] = seat;
+                li_answer.push_back(make_pair(customer, seat + 1));
             }
         }
         else
         {
-            int seat_number = m_customer_in[customer];
-            li_seat.remove(seat_number);
-            m_customer_in.erase(customer);
+            int seat = m_cust_seat[customer];
+            m_seat_cust.erase(seat);
+            m_cust_seat.erase(customer);
         }
     }
 }
@@ -113,7 +103,7 @@ void input()
 
 void output()
 {
-    for(auto answer : li_answer)
+    for (auto answer : li_answer)
     {
         cout << answer.first << " " << answer.second << "\n";
     }
