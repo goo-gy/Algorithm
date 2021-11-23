@@ -1,0 +1,2 @@
+>gi|224384768|gb|CM000663.1| Homo sapiens chromosome 1, GRCh37 primary reference assembly
+ATAGGGCTAACGTGCTTA

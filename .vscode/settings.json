@@ -21,6 +21,13 @@
     "type_traits": "cpp",
     "xlocnum": "cpp",
     "cstdlib": "cpp",
-    "cmath": "cpp"
+    "cmath": "cpp",
+    "array": "cpp",
+    "list": "cpp",
+    "xstddef": "cpp",
+    "algorithm": "cpp",
+    "string": "cpp",
+    "xiosbase": "cpp",
+    "xmemory": "cpp"
   }
 }

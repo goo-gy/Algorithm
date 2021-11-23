@@ -3,6 +3,7 @@
 *.out
 *.png
 .vscode/
+*.zip
 samsung/
 kakao/
 baekjoon/.vscode/
