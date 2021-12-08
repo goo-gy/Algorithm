@@ -4,36 +4,107 @@
 #include <array>
 #include <queue>
 
-#define INF 123456789
-#define SRC first
-#define V_DST second
+#define INF         123456789
+#define SRC         first
+#define V_DST       second
+#define NODE        first
+#define DISTANCE    second
 
 using namespace std;
 
-int N;
 array<char, 3> a_people;
 vector<char> v_node;
 map<char, vector<char>> m_v_graph;
-array<array<int, 128>, 3> a_a_distance;
+map<char, array<int, 128>> m_a_distance;
+pair<char, int> answer;
 
-void BFS(char person, int personId)
+void input();
+void solution();
+void output();
+void addEdge(int src, int dst);
+void BFS(char person);
+int  getMaxDistance(char dst);
+
+int main()
 {
-    queue<pair<char, int>> q_node;
-    q_node.push(make_pair(person, 3));
+    input();
+    solution();
+    output();
+    return 0;
+}
 
-    a_a_distance[personId][person] = 0;
-    while (!q_node.empty())
+void input()
+{
+    int N;
+    cin >> N;
+    for (char &person : a_people)
     {
-        pair<char, int> p_cur = q_node.front();
-        char current = p_cur.first;
-        int distance = p_cur.second;
-        q_node.pop();
-        for (char next : m_v_graph[current])
+        cin >> person;
+        m_a_distance[person] = {};
+        m_a_distance[person].fill(INF);
+    }
+    v_node.resize(N);
+    for (char &node : v_node)
+    {
+        cin >> node;
+        while (true)
         {
-            if (a_a_distance[personId][next] == INF)
+            char dst;
+            cin >> dst;
+            if (dst == '$')
+                break;
+            addEdge(node, dst);
+        }
+    }
+}
+
+void addEdge(int src, int dst)
+{
+    auto iter = m_v_graph.find(src);
+    if (iter == m_v_graph.end())
+        m_v_graph[src] = vector<char>(1, dst);
+    else
+        iter->V_DST.push_back(dst);
+}
+
+void solution()
+{
+    for (char person : a_people)
+        BFS(person);
+
+    char bestPlace;
+    int minDistance = INF;
+    for (char place : v_node)
+    {
+        int distance = getMaxDistance(place);
+        if (distance < minDistance)
+        {
+            bestPlace = place;
+            minDistance = distance;
+        }
+    }
+
+    if (minDistance == INF)
+        answer = make_pair('@', -1);
+    else
+        answer = make_pair(bestPlace, minDistance);
+}
+
+void BFS(char person)
+{
+    queue<pair<char, int>> q_path;
+    m_a_distance[person][person] = 0;
+    
+    q_path.push(make_pair(person, 1));
+    while (!q_path.empty())
+    {
+        pair<char, int> cur = q_path.front(); q_path.pop();
+        for (char next : m_v_graph[cur.NODE])
+        {
+            if (m_a_distance[person][next] == INF)
             {
-                a_a_distance[personId][next] = distance - 2;
-                q_node.push(make_pair(next, distance + 3));
+                m_a_distance[person][next] = cur.DISTANCE;
+                q_path.push(make_pair(next, cur.DISTANCE + 3));
             }
         }
     }
@@ -42,80 +113,12 @@ void BFS(char person, int personId)
 int getMaxDistance(char dst)
 {
     int max_distance = 0;
-    for (int i = 0; i < 3; i++)
-        max_distance = max(max_distance, a_a_distance[i][dst]);
+    for (char person : a_people)
+        max_distance = max(max_distance, m_a_distance[person][dst]);
     return max_distance;
 }
 
-void solution()
+void output()
 {
-    int i = 0;
-    for (char person : a_people)
-    {
-        a_a_distance[i].fill(INF);
-        BFS(person, i);
-        i++;
-    }
-
-    char bestPlace;
-    int min_distance = INF;
-    for (char place : v_node)
-    {
-        int distance = getMaxDistance(place);
-        if (distance < min_distance)
-        {
-            bestPlace = place;
-            min_distance = distance;
-        }
-    }
-
-    if(min_distance == INF)
-        cout << '@' << "\n" << -1 << "\n";
-    else  
-        cout << bestPlace << "\n" << min_distance << "\n";
-}
-
-
-void add_edge(int src, int dst)
-{
-    auto it_src = m_v_graph.find(src);
-    if (it_src == m_v_graph.end())
-        m_v_graph[src] = vector<char>(1, dst);
-    else
-        it_src->V_DST.push_back(dst);
-}
-
-void input()
-{
-    cin >> N;
-    for (char &person : a_people)
-        cin >> person;
-    for (int i = 1; i <= N; i++)
-    {
-        char src, dst;
-        cin >> src;
-        v_node.push_back(src);
-        while(true)
-        {
-            cin >> dst;
-            if (dst == '$')
-                break;
-            add_edge(src, dst);
-        }
-    }
-}
-
-void pre_setting()
-{
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-}
-
-
-int main()
-{
-    pre_setting();
-    input();
-    solution();
-    return 0;
+    cout << answer.first << "\n" << answer.second << "\n";
 }
