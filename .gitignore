@@ -1,9 +1,10 @@
-*.exe
-*.inp
-*.out
-*.png
-.vscode/
-*.zip
+**.exe
+**.inp
+**.out
+**.png
+**.zip
 samsung/
 kakao/
+
+.vscode/*
 baekjoon/.vscode/

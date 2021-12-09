@@ -28,6 +28,7 @@
     "algorithm": "cpp",
     "string": "cpp",
     "xiosbase": "cpp",
-    "xmemory": "cpp"
+    "xmemory": "cpp",
+    "regex": "cpp"
   }
 }
