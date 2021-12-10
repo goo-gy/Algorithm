@@ -1,6 +1,8 @@
+#-*- coding: utf-8 -*-
 import re
+import sys
 
-re_NotKorean = "[^가-힣]*"
+re_NotKorean = "[^ㄱ-ㅎ|ㅏ-ㅣ|가-힣]*"
 li_set_subStr = []
 li_li_similarity = [[]]
 
@@ -20,7 +22,7 @@ def updateSimilarity():
 def getMostSimilar():
     max1 = max2 = 0
     for i in range(N):
-        for j in range(i+1, N):
+        for j in range(i, N):
             if(li_li_similarity[i][j] > li_li_similarity[max1][max2]):
                 max1 = i
                 max2 = j
@@ -28,21 +30,21 @@ def getMostSimilar():
 
 def get_input():
     global li_li_similarity, N
-    N = int(input())
-    li_li_similarity = [[ 0 for j in range(N)] for i in range(N)]
-    for i in range(N):
-        str_input = input()
-        str_korean = re.sub(re_NotKorean, "", str_input)
-        addSubstr(str_korean)
+    with open(sys.stdin.fileno(), encoding='utf8') as std_input:
+        N = int(std_input.readline().strip())
+        li_li_similarity = [[ 0 for j in range(N)] for i in range(N)]
+        input_data = std_input.read()
+        lines = input_data.split('$')
+        for line in lines:
+            str_korean = re.sub(re_NotKorean, "", line)
+            addSubstr(str_korean)
 
 def solution():
     updateSimilarity()
     pair = getMostSimilar()
     print(pair[0] + 1, pair[1] + 1)
 
-def main():
-    get_input()
-    solution()
 
 if(__name__ == "__main__"):
-    main()
+    get_input()
+    solution()
