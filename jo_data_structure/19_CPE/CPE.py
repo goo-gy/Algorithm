@@ -8,6 +8,9 @@ li_set_subStr = []
 li_li_sim = [[]]
 unionLCM = 1
 
+def getLCM(num1, num2):
+    return (num1 * num2) // math.gcd(num1, num2)
+
 def addSubstr(sentence):
     set_subStr = set()
     for i in range(len(sentence) - 1):
@@ -22,8 +25,8 @@ def updateSimilarity():
             interCount = len(li_set_subStr[i].intersection(li_set_subStr[j]))
             unionCount = len(li_set_subStr[i].union(li_set_subStr[j]))
             li_li_sim[i][j] = (interCount, unionCount)
-            # if(unionCount != 0):
-            #     unionLCM = math.lcm(unionLCM, unionCount)
+            if(unionCount != 0):
+                unionLCM = getLCM(unionLCM, unionCount)
 
 def getMostSimilar():
     max1 = max2 = 0
@@ -32,8 +35,7 @@ def getMostSimilar():
         for j in range(i + 1, N):
             if(li_li_sim[i][j][1] == 0):
                 continue
-            # sim = unionLCM * (li_li_sim[i][j][0] / li_li_sim[i][j][1])
-            sim = li_li_sim[i][j][0] / li_li_sim[i][j][1]
+            sim = unionLCM * (li_li_sim[i][j][0] / li_li_sim[i][j][1])
             if(sim > simMax):
                 max1 = i
                 max2 = j
@@ -44,9 +46,6 @@ def get_input():
     global N
     with open(sys.stdin.fileno(), encoding='utf8') as std_input:
         N = int(std_input.readline())
-        # input_data = std_input.read()
-        # lines = input_data.split('$')
-        # for line in lines[:N]:
         for i in range(N):
             line = std_input.readline()
             str_korean = re.sub(re_NotKorean, "", line)
