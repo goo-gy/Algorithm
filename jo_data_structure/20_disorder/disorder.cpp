@@ -54,12 +54,11 @@ void printResult(set<int> &s_gene)
     auto check = m_geneDisease.find(s_gene);
     if (check != m_geneDisease.end())
     {
-        vector<int> v_disease;
+        set<int, greater<int>> s_disease;
         auto equal_range = m_geneDisease.equal_range(s_gene);
         for(auto iter = equal_range.first; iter != equal_range.second; iter++)
-            v_disease.push_back(iter->second);
-        sort(v_disease.begin(), v_disease.end(), greater<int>());
-        for(auto disease : v_disease)
+            s_disease.insert(iter->second);
+        for(auto disease : s_disease)
             cout << disease << " ";
     }
     else
