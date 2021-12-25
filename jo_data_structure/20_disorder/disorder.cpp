@@ -4,6 +4,7 @@
 #include <set>
 #include <map>
 #include <algorithm>
+#include <cassert>
 
 using namespace std;
 
@@ -19,8 +20,7 @@ int getCommand()
 {
     string cmdInput;
     cin >> cmdInput;
-    if (cmdInput.size() != 1)
-        return ERROR;
+    assert(cmdInput.size() == 1);
 
     auto iter = find(v_command.begin(), v_command.end(), cmdInput);
     if (iter == v_command.end())
@@ -56,7 +56,8 @@ void printResult(set<int> &s_gene)
     if (check != m_geneDisease.end())
     {
         vector<int> v_disease;
-        for(auto iter = m_geneDisease.lower_bound(s_gene); iter != m_geneDisease.upper_bound(s_gene); iter++)
+        auto equal_range = m_geneDisease.equal_range(s_gene);
+        for(auto iter = equal_range.first; iter != equal_range.second; iter++)
             v_disease.push_back(iter->second);
         sort(v_disease.begin(), v_disease.end(), greater<int>());
         for(auto disease : v_disease)
@@ -100,6 +101,7 @@ void solution()
         case QUIT:
             return;
         default:
+            assert(true);
             return;
         }
     }
