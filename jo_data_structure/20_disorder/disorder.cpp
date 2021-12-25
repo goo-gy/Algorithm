@@ -23,8 +23,7 @@ int getCommand()
     assert(cmdInput.size() == 1);
 
     auto iter = find(v_command.begin(), v_command.end(), cmdInput);
-    if (iter == v_command.end())
-        return ERROR;
+    assert(iter != v_command.end());
 
     int index = iter - v_command.begin();
     return index;
