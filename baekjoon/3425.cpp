@@ -194,12 +194,63 @@ int funcMOD()
 void funcEND()
 {
     if (stack_num.size() == 1)
-    {
         cout << stack_num.top() << "\n";
-        stack_num.pop();
-    }
     else
         cout << "ERROR\n";
+}
+
+void runProgram(int initNum)
+{
+    stack_num = stack<int>({initNum});
+    numIndex = 0;
+    int result = OK;
+    for (int cmd : v_command)
+    {
+        switch (cmd)
+        {
+        case NUM:
+            result = funcNUM();
+            break;
+        case POP:
+            result = funcPOP();
+            break;
+        case INV:
+            result = funcINV();
+            break;
+        case DUP:
+            result = funcDUP();
+            break;
+        case SWP:
+            result = funcSWP();
+            break;
+        case ADD:
+            result = funcADD();
+            break;
+        case SUB:
+            result = funcSUB();
+            break;
+        case MUL:
+            result = funcMUL();
+            break;
+        case DIV:
+            result = funcDIV();
+            break;
+        case MOD:
+            result = funcMOD();
+            break;
+        case END:
+            funcEND();
+            break;
+        default:
+            assert(true);
+            break;
+        }
+        if (result == ERROR)
+        {
+            cout << "ERROR\n";
+            break;
+        }
+    }
 }
 
 int solution()
@@ -222,63 +273,14 @@ int solution()
             if (cmd == QUIT)
                 return 0;
         }
-
+        
         int N;
         cin >> N;
         for (int i = 0; i < N; i++)
         {
             int initNum;
             cin >> initNum;
-            stack_num = stack<int>({initNum});
-            numIndex = 0;
-            int result = OK;
-            for (int cmd : v_command)
-            {
-                switch (cmd)
-                {
-                case NUM:
-                    result = funcNUM();
-                    break;
-                case POP:
-                    result = funcPOP();
-                    break;
-                case INV:
-                    result = funcINV();
-                    break;
-                case DUP:
-                    result = funcDUP();
-                    break;
-                case SWP:
-                    result = funcSWP();
-                    break;
-                case ADD:
-                    result = funcADD();
-                    break;
-                case SUB:
-                    result = funcSUB();
-                    break;
-                case MUL:
-                    result = funcMUL();
-                    break;
-                case DIV:
-                    result = funcDIV();
-                    break;
-                case MOD:
-                    result = funcMOD();
-                    break;
-                case END:
-                    funcEND();
-                    break;
-                default:
-                    assert(true);
-                    break;
-                }
-                if (result == ERROR)
-                {
-                    cout << "ERROR\n";
-                    break;
-                }
-            }
+            runProgram(initNum);
         }
         cout << "\n";
     }
