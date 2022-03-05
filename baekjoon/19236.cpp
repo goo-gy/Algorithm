@@ -3,6 +3,8 @@
 #include <algorithm>
 
 #define PII pair<int, int>
+#define EMPTY 0
+#define SHARK -1
 
 using namespace std;
 
@@ -50,7 +52,7 @@ bool check_range(pair<int, int> p)
 
 void moveFish(Fish &fish)
 {
-    if (fish.id == -1)
+    if (fish.id == SHARK)
         return;
 
     PII current = fish.position;
@@ -58,7 +60,7 @@ void moveFish(Fish &fish)
     {
         PII move = moves[fish.direction];
         PII next = make_pair(current.first + move.first, current.second + move.second);
-        if (check_range(next) && vv_map[next.first][next.second] != -1)
+        if (check_range(next) && vv_map[next.first][next.second] != SHARK)
         {
             Fish &other = v_fish[vv_map[next.first][next.second]];
 
@@ -77,7 +79,7 @@ bool firstTime = true;
 bool moveShark(pair<int, int> dst)
 {
     if (!firstTime)
-        vv_map[shark.position.first][shark.position.second] = 0;
+        vv_map[shark.position.first][shark.position.second] = EMPTY;
 
     Fish &fish = v_fish[vv_map[dst.first][dst.second]];
 
@@ -85,8 +87,8 @@ bool moveShark(pair<int, int> dst)
     shark.direction = fish.direction;
     shark.position = dst;
 
-    fish.id = -1;
-    vv_map[dst.first][dst.second] = -1;
+    fish.id = SHARK;
+    vv_map[dst.first][dst.second] = SHARK;
     firstTime = false;
     return true;
 }
@@ -107,7 +109,7 @@ void DFS(PII position)
     for (int i = 1; i <= 3; i++)
     {
         PII next = make_pair(shark.position.first + move.first * i, shark.position.second + move.second * i);
-        if (check_range(next) && vv_map[next.first][next.second] != 0)
+        if (check_range(next) && vv_map[next.first][next.second] != EMPTY)
             DFS(next);
     }
     maxSum = max(maxSum, shark.sum);
