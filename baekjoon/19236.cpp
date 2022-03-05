@@ -43,25 +43,6 @@ vector<Fish> v_fish(1);
 Shark shark;
 int maxSum = 0;
 
-void debug()
-{
-    cout << "direction:" << shark.direction << endl;
-    for (int i = 0; i < N; i++)
-    {
-        for (int j = 0; j < N; j++)
-        {
-            int fishId = vv_map[i][j];
-            fishId = (fishId == -1) ? -1 : v_fish[fishId].id;
-            cout << vv_map[i][j] << ":" << fishId << "\t";
-        }
-        cout << "\n";
-    }
-    cout << "\n";
-    for (auto fish : v_fish)
-        cout << fish.id << ' ';
-    cout << "\n---------------------------\n";
-}
-
 bool check_range(pair<int, int> p)
 {
     return (p.first >= 0 && p.second >= 0 && p.first < N && p.second < N);
@@ -112,23 +93,11 @@ bool moveShark(pair<int, int> dst)
 
 void DFS(PII position)
 {
-    // backup
-    vector<vector<int>> vv_mapBackUp;
-    vector<Fish> v_fishBackUp;
-    Shark sharkBackUp;
-    v_fishBackUp.assign(v_fish.begin(), v_fish.end());
-    sharkBackUp = shark;
-    vv_mapBackUp.resize(N);
-    for (int i = 0; i < N; i++)
-    {
-        vv_mapBackUp[i].resize(N);
-        for (int j = 0; j < N; j++)
-        {
-            vv_mapBackUp[i][j] = vv_map[i][j];
-        }
-    }
-    //
+    vector<vector<int>> vv_mapBackUp = vv_map;
+    vector<Fish> v_fishBackUp = v_fish;
+    Shark sharkBackUp = shark;
 
+    //
     moveShark(position);
     for (int i = 1; i < v_fish.size(); i++)
     {
@@ -139,19 +108,13 @@ void DFS(PII position)
     {
         PII next = make_pair(shark.position.first + move.first * i, shark.position.second + move.second * i);
         if (check_range(next) && vv_map[next.first][next.second] != 0)
-        {
             DFS(next);
-        }
     }
     maxSum = max(maxSum, shark.sum);
-    // reset
-    v_fish.assign(v_fishBackUp.begin(), v_fishBackUp.end());
+
+    v_fish = v_fishBackUp;
     shark = sharkBackUp;
-    for (int i = 0; i < N; i++)
-    {
-        for (int j = 0; j < N; j++)
-            vv_map[i][j] = vv_mapBackUp[i][j];
-    }
+    vv_map = vv_mapBackUp;
 }
 
 void solution()
