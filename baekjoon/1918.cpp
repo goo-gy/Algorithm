@@ -19,54 +19,56 @@ void initialize()
 
 void preProcess()
 {
-    vector<int> v_level;
-    v_level.push_back(1);
-    char openStack = 0;
+    vector<int> v_level(1, 1);
+    vector<bool> v_open(1, false);
+    vector<vector<string>> vv_symbol(1);
     int i = 0;
-    while (i < str_input.size() - 1)
+    for (auto symbol : str_input)
     {
-        char var = str_input[i];
-        char op = str_input[i + 1];
-        if (var == '(')
+        if (symbol == '(')
         {
-            str_convert += var;
             v_level.push_back(1);
-            i++;
-            continue;
+            v_open.push_back(false);
+            vv_symbol.push_back(vector<string>(1, string("(")));
         }
-        else if (var == ')')
+        else if (symbol == ')')
         {
-            str_convert += var;
+            vv_symbol.back().push_back(string(")"));
+            if (v_open.back())
+                vv_symbol.back().back() = vv_symbol.back().back() + ")";
+            string symbolSet = "";
+            for (auto symbol : vv_symbol.back())
+                symbolSet += symbol;
             v_level.pop_back();
-            i++;
-            continue;
+            v_open.pop_back();
+            vv_symbol.pop_back();
+            vv_symbol.back().push_back(symbolSet);
         }
-        if (map_level.find(op) == map_level.end())
+        else
         {
-            str_convert += var;
-            i++;
-            continue;
+            auto iterLevel = map_level.find(symbol);
+            if (iterLevel != map_level.end())
+            {
+                if (iterLevel->second > v_level.back())
+                {
+                    vv_symbol.back().back() = "(" + vv_symbol.back().back();
+                    v_open.back() = true;
+                }
+                else if (iterLevel->second < v_level.back())
+                {
+                    vv_symbol.back().back() = vv_symbol.back().back() + ")";
+                    v_open.back() = false;
+                }
+                v_level.back() = iterLevel->second;
+            }
+            vv_symbol.back().push_back(string(1, symbol));
         }
-
-        if (map_level[op] > v_level[v_level.size() - 1])
-        {
-            str_convert += '(';
-            openStack++;
-        }
-        str_convert += var;
-        if (map_level[op] < v_level[v_level.size() - 1])
-        {
-            str_convert += ')';
-            openStack--;
-        }
-        str_convert += op;
-        v_level[v_level.size() - 1] = map_level[op];
-        i += 2;
     }
-    str_convert += str_input.back();
-    for (int i = 1; i <= openStack; i++)
-        str_convert += ')';
-    cout << str_convert << endl;
+    str_convert = "";
+    if (v_open.back())
+        vv_symbol.back().back() = vv_symbol.back().back() + ")";
+    for (auto symbol : vv_symbol.back())
+        str_convert += symbol;
 }
 
 void process()
