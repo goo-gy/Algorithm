@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <set>
 #include <algorithm>
 
 using namespace std;
@@ -22,7 +21,7 @@ vector<string> v_command = {
     "toggle",
     "all",
     "empty"};
-set<int> set_num;
+vector<int> v_num(21);
 
 int getCmd()
 {
@@ -30,37 +29,6 @@ int getCmd()
     cin >> str_cmd;
     auto iter = find(v_command.begin(), v_command.end(), str_cmd);
     return iter - v_command.begin();
-}
-
-void remove()
-{
-    int num;
-    cin >> num;
-    auto iter = set_num.find(num);
-    if (iter != set_num.end())
-        set_num.erase(iter);
-}
-
-void check()
-{
-    int num;
-    cin >> num;
-    auto iter = set_num.find(num);
-    if (iter != set_num.end())
-        cout << "1\n";
-    else
-        cout << "0\n";
-}
-
-void toggle()
-{
-    int num;
-    cin >> num;
-    auto iter = set_num.find(num);
-    if (iter != set_num.end())
-        set_num.erase(iter);
-    else
-        set_num.insert(num);
 }
 
 void solution()
@@ -74,23 +42,27 @@ void solution()
         {
         case ADD:
             cin >> num;
-            set_num.insert(num);
+            v_num[num] = 1;
             break;
         case REMOVE:
-            remove();
+            cin >> num;
+            v_num[num] = 0;
             break;
         case CHECK:
-            check();
+            cin >> num;
+            cout << v_num[num] << "\n";
             break;
         case TOGGLE:
-            toggle();
+            cin >> num;
+            v_num[num] = !v_num[num];
             break;
         case ALL:
             for (int i = 1; i <= 20; i++)
-                set_num.insert(i);
+                v_num[i] = 1;
             break;
         case EMPTY:
-            set_num.clear();
+            for (int i = 1; i <= 20; i++)
+                v_num[i] = 0;
             break;
         default:
             break;
