@@ -1,60 +1,59 @@
+INF = 1234567890
 wallSize = 0
+
 l_weak = []
 l_member = []
-
 completeCount = 0
 l_complete = []
-l_dist = []
-l_direct = [-1, 1]
 s_record = []
+needCount = INF
 
-INF = 1234567890
+
+def goForward(member, start):
+    global completeCount
+    l_visited = []
+    till = l_weak[start] + member
+    for current in range(start, len(l_weak)):
+        if(l_complete[current] or till < l_weak[current]):
+            break
+        l_visited.append(current)
+        l_complete[current] = True
+        completeCount += 1
+    if(till >= wallSize):
+        till -= wallSize
+        for current in range(len(l_weak)):
+            if(l_complete[current] or till < l_weak[current]):
+                break
+            l_visited.append(current)
+            l_complete[current] = True
+            completeCount += 1
+
+    s_record.append(l_visited)
+
+
+def recover():
+    global completeCount
+    l_visited = s_record.pop()
+    for visited in l_visited:
+        l_complete[visited] = False
+    completeCount -= len(l_visited)
 
 
 def goTest(memberIndex):
-    global completeCount
+    global needCount
     if(completeCount == len(l_complete)):
-        return memberIndex
-
-    if(memberIndex >= len(l_member)):
-        return INF
+        needCount = min(needCount, memberIndex)
+        return
+    if(memberIndex >= needCount or memberIndex >= len(l_member)):
+        return
     member = l_member[memberIndex]
 
-    needCount = INF
     for start, _ in enumerate(l_weak):
         if(l_complete[start]):
             continue
-        for direct in l_direct:
-            # go
-            current = start
-            time = member
-            l_visited = []
-            while(time >= 0):
-                if(l_complete[current]):
-                    break
-                l_visited.append(current)
-                l_complete[current] = True
-                completeCount += 1
-                next = (current + direct + len(l_weak)) % len(l_weak)
-                if(next == start):
-                    break
-                high = max(l_weak[current], l_weak[next])
-                low = min(l_weak[current], l_weak[next])
-                if((current == 0 and next == len(l_weak) - 1) or (next == 0 and current == len(l_weak) - 1)):
-                    distance = (low - high + wallSize) % wallSize
-                else:
-                    distance = high - low
-                time -= distance
-                current = next
-            #
-            s_record.append(l_visited)
-            needCount = min(needCount, goTest(memberIndex + 1))
-            # recover
-            l_visited = s_record.pop()
-            for visited in l_visited:
-                l_complete[visited] = False
-            completeCount -= len(l_visited)
-    return needCount
+        goForward(member, start)
+        goTest(memberIndex + 1)
+        recover()
 
 
 def solution(n, weak, dist):
@@ -67,15 +66,12 @@ def solution(n, weak, dist):
     l_member = dist
     l_complete = [False for _ in l_weak]
 
-    for index, _ in enumerate(l_weak):
-        distance = (l_weak[index] - l_weak[index - 1] + n) % n
-        l_dist.append(distance)
-
     l_member.sort(reverse=True)
-    answer = goTest(0)
+    goTest(0)
+    if(needCount == INF):
+        return -1
+    return needCount
 
-    return answer
 
-
-result = solution(12, [10, 0],  [1, 2])
+result = solution(12, [1, 3, 4, 9, 10], [3, 5, 7])
 print(result)
