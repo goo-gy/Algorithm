@@ -18,31 +18,19 @@ def solution(n, t, m, timetable):
 
     l_crewMin = [time_to_min(crew) for crew in timetable]
     l_crewMin.sort()
-    l_busCrew = [0 for i in range(n)]
+    l_busCrew = [[] for i in range(n)]
 
     crew = 0
     bus = 0
     while(crew < len(l_crewMin) and bus < n):
-        if(l_crewMin[crew] <= l_busMin[bus]):
-            l_busCrew[bus] += 1
-            crew += 1
-        else:
+        if(l_crewMin[crew] > l_busMin[bus] or len(l_busCrew[bus]) >= m):
             bus += 1
-    l_crewMin = l_crewMin[:crew]
-
-    for index in range(0, n - 1):
-        overflow = l_busCrew[index] - m
-        if(overflow > 0):
-            l_busCrew[index] -= overflow
-            l_busCrew[index + 1] += overflow
-
-    overflow = l_busCrew[-1] - m
-    if(overflow < 0):
+            continue
+        l_busCrew[bus].append(l_crewMin[crew])
+        crew += 1
+    if(len(l_busCrew[-1]) < m):
         return min_to_time(l_busMin[-1])
-    if(overflow > 0):
-        l_crewMin = l_crewMin[:-overflow]
-
-    return min_to_time(l_crewMin[-1] - 1)
+    return min_to_time(l_busCrew[-1][-1] - 1)
 
 
 result = solution(2, 10, 2, ["09:05", "09:09",
