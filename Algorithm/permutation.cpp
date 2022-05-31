@@ -1,46 +1,46 @@
 #include <iostream>
 #include <vector>
 #include <ctime>
-
 using namespace std;
 
-void print_result(vector<int> &v_selected)
+#define N 5
+#define R 5
+
+vector<int> v_num = {1, 2, 3, 4, 5};
+vector<int> result;
+vector<bool> visited;
+
+void print_result()
 {
-    for (int num : v_selected)
-    {
+    for (int num : result)
         cout << num << " ";
-    }
-    cout << '\n';
+    cout << "\n";
 }
 
-void permutation(vector<int> &v_num, vector<bool> &v_visited, vector<int> &v_selected)
+void permutation(int depth)
 {
-    if (v_selected.size() == v_num.size())
+    if (R < depth)
     {
-        print_result(v_selected);
+        print_result();
         return;
     }
-
-    for (int i = 0; i < v_num.size(); i++)
+    for (int i = 0; i < N; i++)
     {
-        if (!v_visited[i])
+        if (!visited[i])
         {
-            v_visited[i] = true;
-            v_selected.push_back(v_num[i]);
-            permutation(v_num, v_visited, v_selected);
-            v_selected.pop_back();
-            v_visited[i] = false;
+            visited[i] = true;
+            result.push_back(v_num[i]);
+            permutation(depth + 1);
+            result.pop_back();
+            visited[i] = false;
         }
     }
 }
 
 int solution()
 {
-    vector<int> v_num = {1, 2, 3, 4, 5};
-    vector<bool> v_visited(v_num.size(), false);
-    vector<int> v_selected;
-
-    permutation(v_num, v_visited, v_selected);
+    visited.resize(N);
+    permutation(1);
     return 0;
 }
 
